@@ -1,0 +1,20 @@
+{
+  "profiles": {
+    "Spydersoft.NotificationApi": {
+      "commandName": "Project",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      },
+      "applicationUrl": "https://localhost:57295;http://localhost:57296"
+    },
+    "Testing": {
+      "commandName": "Project",
+      "launchBrowser": false,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Testing"
+      },
+      "applicationUrl": "http://localhost:5300"
+    }
+  }
+}

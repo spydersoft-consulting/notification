@@ -1,0 +1,149 @@
+defaultPodOptions:
+  imagePullSecrets:
+    - name: cr-spydersoft-github
+
+controllers:
+  main:
+    enabled: false
+  notification-api:
+    enabled: true
+    type: deployment
+    replicas: 1
+    revisionHistoryLimit: 1
+    strategy: RollingUpdate
+    containers:
+      main:
+        image:
+          repository: ghcr.io/spydersoft-consulting/notification-api
+          pullPolicy: IfNotPresent
+          tag: latest
+        probes:
+          liveness:
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /livez
+                port: 8080
+              initialDelaySeconds: 10
+              periodSeconds: 10
+              timeoutSeconds: 1
+              failureThreshold: 3
+          readiness:
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /readyz
+                port: 8080
+              initialDelaySeconds: 5
+              periodSeconds: 10
+              timeoutSeconds: 1
+              failureThreshold: 3
+  notification-hub:
+    enabled: true
+    type: deployment
+    # Single instance in v1 — SignalR's in-memory group membership means a second replica
+    # without a backplane would only deliver to whichever replica holds a given connection.
+    # See plans/notifications/realtime-spec.md#scaling-note-v1-single-instance.
+    replicas: 1
+    revisionHistoryLimit: 1
+    strategy: RollingUpdate
+    containers:
+      main:
+        image:
+          repository: ghcr.io/spydersoft-consulting/notification-hub
+          pullPolicy: IfNotPresent
+          tag: latest
+        probes:
+          liveness:
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /livez
+                port: 8080
+              initialDelaySeconds: 10
+              periodSeconds: 10
+              timeoutSeconds: 1
+              failureThreshold: 3
+          readiness:
+            enabled: true
+            custom: true
+            spec:
+              httpGet:
+                path: /readyz
+                port: 8080
+              initialDelaySeconds: 5
+              periodSeconds: 10
+              timeoutSeconds: 1
+              failureThreshold: 3
+
+service:
+  main:
+    enabled: false
+  notification-api:
+    enabled: true
+    controller: notification-api
+    nameOverride: notification-api
+    primary: true
+    type: ClusterIP
+    ports:
+      http:
+        enabled: true
+        primary: true
+        port: 80
+        targetPort: 8080
+  notification-hub:
+    enabled: true
+    controller: notification-hub
+    nameOverride: notification-hub
+    type: ClusterIP
+    ports:
+      http:
+        enabled: true
+        primary: true
+        port: 80
+        targetPort: 8080
+
+route:
+  main:
+    enabled: false
+  notification-api:
+    enabled: true
+    kind: HTTPRoute
+    parentRefs:
+      - name: main
+        namespace: envoy-gateway-system
+        group: gateway.networking.k8s.io
+        kind: Gateway
+    rules:
+      - matches:
+          - path:
+              type: PathPrefix
+              value: /
+        backendRefs:
+          - identifier: notification-api
+            port: 80
+  # Public route for the hub too — browsers connect to it directly over WebSocket from
+  # outside the cluster (same reasoning as the email service's public webhook route). The
+  # hub's /internal/push endpoint is never exposed here — it's only reachable via in-cluster
+  # service DNS. See plans/notifications/realtime-spec.md#internal-push-endpoint-api--hub.
+  notification-hub:
+    enabled: true
+    kind: HTTPRoute
+    parentRefs:
+      - name: main
+        namespace: envoy-gateway-system
+        group: gateway.networking.k8s.io
+        kind: Gateway
+    rules:
+      - matches:
+          - path:
+              type: PathPrefix
+              value: /
+        backendRefs:
+          - identifier: notification-hub
+            port: 80
+
+env_name: dev

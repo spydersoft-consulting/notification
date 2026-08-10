@@ -1,0 +1,11 @@
+<Solution>
+  <Project Path="Spydersoft.Notification.AppHost/Spydersoft.Notification.AppHost.csproj" />
+  <Project Path="Spydersoft.Notification.Client.UnitTests/Spydersoft.Notification.Client.UnitTests.csproj" />
+  <Project Path="Spydersoft.Notification.Client/Spydersoft.Notification.Client.csproj" />
+  <Project Path="Spydersoft.Notification.Contracts/Spydersoft.Notification.Contracts.csproj" />
+  <Project Path="Spydersoft.Notification.TokenGenerator/Spydersoft.Notification.TokenGenerator.csproj" />
+  <Project Path="Spydersoft.NotificationApi.UnitTests/Spydersoft.NotificationApi.UnitTests.csproj" />
+  <Project Path="Spydersoft.NotificationApi/Spydersoft.NotificationApi.csproj" />
+  <Project Path="Spydersoft.NotificationHub.UnitTests/Spydersoft.NotificationHub.UnitTests.csproj" />
+  <Project Path="Spydersoft.NotificationHub/Spydersoft.NotificationHub.csproj" />
+</Solution>
