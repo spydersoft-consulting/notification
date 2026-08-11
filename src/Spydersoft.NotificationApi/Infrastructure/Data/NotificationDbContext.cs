@@ -28,8 +28,8 @@ public sealed class NotificationDbContext(DbContextOptions<NotificationDbContext
                     v => v == null ? null : new Dictionary<string, string>(v)));
 
             entity.HasIndex(n => new { n.UserId, n.CreatedAt });
-            entity.HasIndex(n => new { n.UserId, n.IsRead }).HasFilter("is_read = false");
-            entity.HasIndex(n => new { n.UserId, n.Source, n.EntityType, n.EntityId }).HasFilter("entity_type IS NOT NULL");
+            entity.HasIndex(n => new { n.UserId, n.IsRead }).HasFilter("\"IsRead\" = false");
+            entity.HasIndex(n => new { n.UserId, n.Source, n.EntityType, n.EntityId }).HasFilter("\"EntityType\" IS NOT NULL");
 
             entity.HasMany(n => n.Deliveries)
                 .WithOne(d => d.Notification)
@@ -46,7 +46,7 @@ public sealed class NotificationDbContext(DbContextOptions<NotificationDbContext
         modelBuilder.Entity<DeviceEntity>(entity =>
         {
             entity.ToTable("devices");
-            entity.HasIndex(d => d.UserId).HasFilter("is_active = true");
+            entity.HasIndex(d => d.UserId).HasFilter("\"IsActive\" = true");
         });
     }
 }
