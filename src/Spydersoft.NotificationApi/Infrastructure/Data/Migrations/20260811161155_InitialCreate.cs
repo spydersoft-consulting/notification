@@ -80,7 +80,7 @@ namespace Spydersoft.NotificationApi.Infrastructure.Data.Migrations
                 name: "IX_devices_UserId",
                 table: "devices",
                 column: "UserId",
-                filter: "is_active = true");
+                filter: "\"IsActive\" = true");
 
             migrationBuilder.CreateIndex(
                 name: "IX_notification_deliveries_NotificationId",
@@ -96,13 +96,13 @@ namespace Spydersoft.NotificationApi.Infrastructure.Data.Migrations
                 name: "IX_notifications_UserId_IsRead",
                 table: "notifications",
                 columns: new[] { "UserId", "IsRead" },
-                filter: "is_read = false");
+                filter: "\"IsRead\" = false");
 
             migrationBuilder.CreateIndex(
                 name: "IX_notifications_UserId_Source_EntityType_EntityId",
                 table: "notifications",
                 columns: new[] { "UserId", "Source", "EntityType", "EntityId" },
-                filter: "entity_type IS NOT NULL");
+                filter: "\"EntityType\" IS NOT NULL");
         }
 
         /// <inheritdoc />

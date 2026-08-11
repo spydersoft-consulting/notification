@@ -12,7 +12,7 @@ using Spydersoft.NotificationApi.Infrastructure.Data;
 namespace Spydersoft.NotificationApi.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(NotificationDbContext))]
-    [Migration("20260810205749_InitialCreate")]
+    [Migration("20260811161155_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -57,7 +57,7 @@ namespace Spydersoft.NotificationApi.Infrastructure.Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("UserId")
-                        .HasFilter("is_active = true");
+                        .HasFilter("\"IsActive\" = true");
 
                     b.ToTable("devices", (string)null);
                 });
@@ -148,10 +148,10 @@ namespace Spydersoft.NotificationApi.Infrastructure.Data.Migrations
                     b.HasIndex("UserId", "CreatedAt");
 
                     b.HasIndex("UserId", "IsRead")
-                        .HasFilter("is_read = false");
+                        .HasFilter("\"IsRead\" = false");
 
                     b.HasIndex("UserId", "Source", "EntityType", "EntityId")
-                        .HasFilter("entity_type IS NOT NULL");
+                        .HasFilter("\"EntityType\" IS NOT NULL");
 
                     b.ToTable("notifications", (string)null);
                 });
