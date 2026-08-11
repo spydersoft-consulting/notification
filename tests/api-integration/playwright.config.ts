@@ -48,6 +48,7 @@ export const readOnlyToken = runTokenGen('token-readonly.json', `${userAId} --re
 
 export default defineConfig({
   testDir: './tests',
+  globalTeardown: require.resolve('./global-teardown'),
   fullyParallel: false,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 1 : 0,

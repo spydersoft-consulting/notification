@@ -1,21 +1,12 @@
-import { test, expect, APIRequestContext } from '@playwright/test';
-import { userAId, userAToken, userBToken, machineToken } from '../playwright.config';
+import { test, expect, request as apiRequest, APIRequestContext } from '@playwright/test';
+import { userAToken, userBToken } from '../playwright.config';
 import { DeviceDto } from './types';
 
 const BASE = process.env.NOTIFICATION_BASE_URL ?? 'http://localhost:5300';
 
-function contextFor(request: APIRequestContext, token: string) {
-  return request.newContext({ baseURL: BASE, extraHTTPHeaders: { Authorization: `Bearer ${token}` } });
+function contextFor(_request: APIRequestContext, token: string) {
+  return apiRequest.newContext({ baseURL: BASE, extraHTTPHeaders: { Authorization: `Bearer ${token}` } });
 }
-
-test.afterAll(async ({ request }) => {
-  const ctx = await contextFor(request, machineToken);
-  try {
-    await ctx.delete(`/api/test/notifications?userId=${encodeURIComponent(userAId)}`);
-  } finally {
-    await ctx.dispose();
-  }
-});
 
 test('RegisterDevice_Returns201', async ({ request }) => {
   const userA = await contextFor(request, userAToken);

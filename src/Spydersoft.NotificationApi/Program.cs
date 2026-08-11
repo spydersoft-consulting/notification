@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
@@ -60,7 +61,8 @@ builder.Services.AddHostedService<NotificationDispatcherService>();
 builder.Services.AddHostedService<DispatchReconciliationService>();
 builder.Services.AddScoped<INotificationRouter, NotificationRouter>();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(o => o.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 builder.Services.AddNotificationOpenApi();
 
 var app = builder.Build();
