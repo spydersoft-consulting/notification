@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Spydersoft.NotificationHub;
@@ -59,6 +60,8 @@ builder.Services.AddAuthorization();
 builder.Services.Configure<InternalPushOptions>(builder.Configuration.GetSection(InternalPushOptions.SectionName));
 
 builder.Services.AddSignalR();
+
+builder.Services.ConfigureHttpJsonOptions(o => o.SerializerOptions.Converters.Add(new JsonStringEnumConverter()));
 
 var app = builder.Build();
 

@@ -10,7 +10,6 @@ internal static class InternalPushEndpoints
     {
         app.MapPost("/internal/push", async (
             HttpRequest httpRequest,
-            HubPushRequest request,
             IHubContext<NotificationHub> hubContext,
             IOptions<InternalPushOptions> options,
             CancellationToken ct) =>
@@ -18,6 +17,12 @@ internal static class InternalPushEndpoints
             if (!IsAuthorized(httpRequest, options.Value.HubInternalToken))
             {
                 return Results.Unauthorized();
+            }
+
+            var request = await httpRequest.ReadFromJsonAsync<HubPushRequest>(ct);
+            if (request is null)
+            {
+                return Results.BadRequest();
             }
 
             await hubContext.Clients.Group(NotificationHub.GroupName(request.UserId))

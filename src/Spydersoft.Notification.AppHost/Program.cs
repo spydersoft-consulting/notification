@@ -12,7 +12,7 @@ var hub = builder.AddProject<Projects.Spydersoft_NotificationHub>("notification-
 
 var api = builder.AddProject<Projects.Spydersoft_NotificationApi>("notification-api")
     .WithReference(notificationDb)
-    .WithEnvironment("Notification__HubInternalUrl", hub.GetEndpoint("http") + "/internal")
+    .WithEnvironment("Notification__HubInternalUrl", $"{hub.GetEndpoint("http")}/internal")
     .WithEnvironment("Notification__HubInternalToken", "local-dev-token")
     .WaitFor(postgres)
     .WaitFor(hub);

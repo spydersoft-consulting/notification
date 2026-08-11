@@ -1,12 +1,12 @@
-import { test, expect, APIRequestContext } from '@playwright/test';
+import { test, expect, request as apiRequest, APIRequestContext } from '@playwright/test';
 import * as signalR from '@microsoft/signalr';
 import { userAId, userAToken, userBId, userBToken, machineToken, hubUrl } from '../playwright.config';
 import { NotificationDto, NotificationPushDto } from './types';
 
 const BASE = process.env.NOTIFICATION_BASE_URL ?? 'http://localhost:5300';
 
-function contextFor(request: APIRequestContext, token: string) {
-  return request.newContext({ baseURL: BASE, extraHTTPHeaders: { Authorization: `Bearer ${token}` } });
+function contextFor(_request: APIRequestContext, token: string) {
+  return apiRequest.newContext({ baseURL: BASE, extraHTTPHeaders: { Authorization: `Bearer ${token}` } });
 }
 
 function connect(token: string): signalR.HubConnection {
@@ -16,25 +16,30 @@ function connect(token: string): signalR.HubConnection {
     .build();
 }
 
-async function waitForPush(connection: signalR.HubConnection, timeoutMs: number): Promise<NotificationPushDto | null> {
+// userA is shared with other spec files running in parallel, which may also push
+// notifications to it concurrently — filter to the id this test actually cares about
+// rather than resolving on the first (possibly unrelated) event.
+async function waitForPush(
+  connection: signalR.HubConnection,
+  timeoutMs: number,
+  matches: (n: NotificationPushDto) => boolean = () => true,
+): Promise<NotificationPushDto | null> {
   return new Promise((resolve) => {
-    const timer = setTimeout(() => resolve(null), timeoutMs);
-    connection.on('ReceiveNotification', (n: NotificationPushDto) => {
+    const timer = setTimeout(() => {
+      connection.off('ReceiveNotification', handler);
+      resolve(null);
+    }, timeoutMs);
+    function handler(n: NotificationPushDto) {
+      if (!matches(n)) {
+        return;
+      }
       clearTimeout(timer);
+      connection.off('ReceiveNotification', handler);
       resolve(n);
-    });
+    }
+    connection.on('ReceiveNotification', handler);
   });
 }
-
-test.afterAll(async ({ request }) => {
-  const ctx = await contextFor(request, machineToken);
-  try {
-    await ctx.delete(`/api/test/notifications?userId=${encodeURIComponent(userAId)}`);
-    await ctx.delete(`/api/test/notifications?userId=${encodeURIComponent(userBId)}`);
-  } finally {
-    await ctx.dispose();
-  }
-});
 
 test('Connect_WithValidToken_Succeeds', async () => {
   const connection = connect(userAToken);
@@ -61,7 +66,7 @@ test('ReceivePush_OnNotificationCreate', async ({ request }) => {
   const machine = await contextFor(request, machineToken);
   try {
     await connection.start();
-    const pushPromise = waitForPush(connection, 5000);
+    const pushPromise = waitForPush(connection, 5000, (n) => n.type === 'push-test');
 
     const created = await (await machine.post('/api/v1/notifications', {
       data: { userId: userAId, source: 'realtime-spec', type: 'push-test', subject: 'Push subject', body: 'Push body' },
@@ -82,7 +87,7 @@ test('NoPush_ForDifferentUser', async ({ request }) => {
   const machine = await contextFor(request, machineToken);
   try {
     await connectionA.start();
-    const pushPromise = waitForPush(connectionA, 3000);
+    const pushPromise = waitForPush(connectionA, 3000, (n) => n.type === 'push-test-other-user');
 
     await machine.post('/api/v1/notifications', {
       data: { userId: userBId, source: 'realtime-spec', type: 'push-test-other-user', subject: 'Not for A', body: 'Body' },
@@ -104,7 +109,7 @@ test('Reconnect_StillReceivesPushes', async ({ request }) => {
     await connection.stop();
     await connection.start();
 
-    const pushPromise = waitForPush(connection, 5000);
+    const pushPromise = waitForPush(connection, 5000, (n) => n.type === 'reconnect-test');
     const created = await (await machine.post('/api/v1/notifications', {
       data: { userId: userAId, source: 'realtime-spec', type: 'reconnect-test', subject: 'After reconnect', body: 'Body' },
     })).json() as NotificationDto;

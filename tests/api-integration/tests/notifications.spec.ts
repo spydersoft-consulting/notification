@@ -1,12 +1,12 @@
-import { test, expect, APIRequestContext } from '@playwright/test';
+import { test, expect, request as apiRequest, APIRequestContext } from '@playwright/test';
 import { userAId, userAToken, userBId, userBToken, machineToken, readOnlyToken } from '../playwright.config';
 import { NotificationDto } from './types';
 
 const BASE = process.env.NOTIFICATION_BASE_URL ?? 'http://localhost:5300';
 const SOURCE = 'notifications-spec';
 
-function contextFor(request: APIRequestContext, token: string) {
-  return request.newContext({ baseURL: BASE, extraHTTPHeaders: { Authorization: `Bearer ${token}` } });
+function contextFor(_request: APIRequestContext, token: string) {
+  return apiRequest.newContext({ baseURL: BASE, extraHTTPHeaders: { Authorization: `Bearer ${token}` } });
 }
 
 async function cleanup(request: APIRequestContext, userId: string) {
@@ -17,11 +17,6 @@ async function cleanup(request: APIRequestContext, userId: string) {
     await ctx.dispose();
   }
 }
-
-test.afterAll(async ({ request }) => {
-  await cleanup(request, userAId);
-  await cleanup(request, userBId);
-});
 
 async function createNotification(ctx: APIRequestContext, userId: string, overrides: Partial<{ type: string; priority: string }> = {}) {
   return ctx.post('/api/v1/notifications', {
