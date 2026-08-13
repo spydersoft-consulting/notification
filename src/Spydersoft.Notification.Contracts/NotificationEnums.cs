@@ -1,5 +1,8 @@
+using System.Text.Json.Serialization;
+
 namespace Spydersoft.Notification.Contracts;
 
+[JsonConverter(typeof(JsonStringEnumConverter<NotificationPriority>))]
 public enum NotificationPriority
 {
     Low,
@@ -7,6 +10,7 @@ public enum NotificationPriority
     High,
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter<NotificationStatus>))]
 public enum NotificationStatus
 {
     Created,
@@ -15,6 +19,7 @@ public enum NotificationStatus
     PartiallyFailed,
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter<NotificationChannel>))]
 public enum NotificationChannel
 {
     InApp,
@@ -22,6 +27,7 @@ public enum NotificationChannel
     Sms,
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter<DeliveryStatus>))]
 public enum DeliveryStatus
 {
     Pending,
@@ -30,6 +36,7 @@ public enum DeliveryStatus
     Skipped,
 }
 
+[JsonConverter(typeof(JsonStringEnumConverter<DeviceType>))]
 public enum DeviceType
 {
     Web,
