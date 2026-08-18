@@ -10,6 +10,8 @@ public sealed class NotificationDbContext(DbContextOptions<NotificationDbContext
     public DbSet<NotificationEntity> Notifications => Set<NotificationEntity>();
     public DbSet<NotificationDeliveryEntity> NotificationDeliveries => Set<NotificationDeliveryEntity>();
     public DbSet<DeviceEntity> Devices => Set<DeviceEntity>();
+    public DbSet<NotificationPreferenceEntity> NotificationPreferences => Set<NotificationPreferenceEntity>();
+    public DbSet<NotificationTypePreferenceEntity> NotificationTypePreferences => Set<NotificationTypePreferenceEntity>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -47,6 +49,18 @@ public sealed class NotificationDbContext(DbContextOptions<NotificationDbContext
         {
             entity.ToTable("devices");
             entity.HasIndex(d => d.UserId).HasFilter("\"IsActive\" = true");
+        });
+
+        modelBuilder.Entity<NotificationPreferenceEntity>(entity =>
+        {
+            entity.ToTable("notification_preferences");
+            entity.HasKey(p => p.UserId);
+        });
+
+        modelBuilder.Entity<NotificationTypePreferenceEntity>(entity =>
+        {
+            entity.ToTable("notification_type_preferences");
+            entity.HasIndex(p => new { p.UserId, p.Source, p.Type }).IsUnique();
         });
     }
 }
