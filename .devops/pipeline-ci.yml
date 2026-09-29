@@ -70,6 +70,7 @@ extends:
         artifactName: notificationHub
 
     executeTests: true
+    testRunner: mtp
     testProjects: "src/**/*.UnitTests/*.csproj"
 
     sonarProjectKey: spydersoft-consulting_notification
