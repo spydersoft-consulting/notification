@@ -7,5 +7,10 @@
 		<Company>Spydersoft Consulting</Company>
 		<RepositoryUrl>https://github.com/spydersoft-consulting/notification</RepositoryUrl>
 		<PackageLicenseExpression>MIT</PackageLicenseExpression>
+
+		<!-- Run NUnit test projects on Microsoft.Testing.Platform instead of the legacy
+		     VSTest host. Must be set here in .props, not .targets: NUnit3TestAdapter.targets
+		     copies this property's value at import time, not via a live MSBuild binding. -->
+		<EnableNUnitRunner>true</EnableNUnitRunner>
 	</PropertyGroup>
 </Project>
