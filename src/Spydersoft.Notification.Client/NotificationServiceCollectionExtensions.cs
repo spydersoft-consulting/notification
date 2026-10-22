@@ -22,6 +22,7 @@ public static class NotificationServiceCollectionExtensions
 
         services.AddHttpClient<INotificationClient, NotificationHttpClient>(Configure);
         services.AddHttpClient<IDeviceClient, DeviceHttpClient>(Configure);
+        services.AddHttpClient<IPreferencesClient, PreferencesHttpClient>(Configure);
         services.AddSingleton<NotificationHubConnectionFactory>();
 
         return services;

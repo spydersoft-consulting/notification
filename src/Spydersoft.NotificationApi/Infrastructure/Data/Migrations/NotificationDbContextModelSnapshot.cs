@@ -153,6 +153,60 @@ namespace Spydersoft.NotificationApi.Infrastructure.Data.Migrations
                     b.ToTable("notifications", (string)null);
                 });
 
+            modelBuilder.Entity("Spydersoft.NotificationApi.Infrastructure.Data.Entities.NotificationPreferenceEntity", b =>
+                {
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("SmsOptOut")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.HasKey("UserId");
+
+                    b.ToTable("notification_preferences", (string)null);
+                });
+
+            modelBuilder.Entity("Spydersoft.NotificationApi.Infrastructure.Data.Entities.NotificationTypePreferenceEntity", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<bool>("EmailEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<bool>("SmsEnabled")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Source")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId", "Source", "Type")
+                        .IsUnique();
+
+                    b.ToTable("notification_type_preferences", (string)null);
+                });
+
             modelBuilder.Entity("Spydersoft.NotificationApi.Infrastructure.Data.Entities.NotificationDeliveryEntity", b =>
                 {
                     b.HasOne("Spydersoft.NotificationApi.Infrastructure.Data.Entities.NotificationEntity", "Notification")
