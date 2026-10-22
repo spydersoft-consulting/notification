@@ -3,6 +3,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.IdentityModel.Tokens;
 using Spydersoft.NotificationApi;
+using Spydersoft.NotificationApi.Channels;
+using Spydersoft.NotificationApi.Channels.Sms;
 using Spydersoft.NotificationApi.Dispatch;
 using Spydersoft.NotificationApi.Endpoints;
 using Spydersoft.NotificationApi.Hub;
@@ -59,6 +61,7 @@ builder.Services.AddSingleton<NotificationDispatchQueue>();
 builder.Services.AddHostedService<NotificationDispatcherService>();
 builder.Services.AddHostedService<DispatchReconciliationService>();
 builder.Services.AddScoped<INotificationRouter, NotificationRouter>();
+builder.Services.AddSmsChannel(builder.Configuration);
 
 builder.Services.AddControllers();
 builder.Services.AddNotificationOpenApi();
