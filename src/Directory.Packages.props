@@ -24,6 +24,7 @@
 		<!-- Pin transitive to resolve MSB3277: Npgsql brings 10.0.0, EF Core brings 10.0.7 -->
 		<PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.7" />
 		<PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
+		<PackageVersion Include="Twilio" Version="8.1.0" />
 	</ItemGroup>
 
 	<ItemGroup>
