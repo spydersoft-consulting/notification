@@ -23,7 +23,7 @@
 		<PackageVersion Include="Microsoft.EntityFrameworkCore.InMemory" Version="10.0.7" />
 		<!-- Pin transitive to resolve MSB3277: Npgsql brings 10.0.0, EF Core brings 10.0.7 -->
 		<PackageVersion Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.7" />
-		<PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.0" />
+		<PackageVersion Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="10.0.3" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -35,7 +35,7 @@
 	<ItemGroup>
 		<!-- OAuth2 client-credentials token acquisition / JWT creation -->
 		<PackageVersion Include="IdentityModel" Version="7.0.0" />
-		<PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.15.0" />
+		<PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.23.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -53,10 +53,10 @@
 	<ItemGroup>
 		<!-- Testing -->
 		<PackageVersion Include="NUnit" Version="4.5.1" />
-		<PackageVersion Include="NUnit3TestAdapter" Version="6.2.0" />
-		<PackageVersion Include="NUnit.Analyzers" Version="4.13.0" />
+		<PackageVersion Include="NUnit3TestAdapter" Version="6.3.1" />
+		<PackageVersion Include="NUnit.Analyzers" Version="4.15.0" />
 		<PackageVersion Include="NSubstitute" Version="5.3.0" />
-		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.5.1" />
+		<PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.12.0" />
 		<PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.7" />
 		<PackageVersion Include="Microsoft.Testing.Extensions.CodeCoverage" Version="18.11.2" />
 		<PackageVersion Include="Microsoft.Testing.Extensions.TrxReport" Version="2.3.3" />
