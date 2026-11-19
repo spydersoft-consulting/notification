@@ -33,6 +33,7 @@ pr:
   branches:
     include:
       - main
+      - feature/*
 
 extends:
   template: pipelines/build-multi-container/v1.yml@templates
